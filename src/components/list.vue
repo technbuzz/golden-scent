@@ -5,7 +5,7 @@
 <script>
 import Product from './product.vue'
 export default {
-  name: 'Product List',
+  name: 'ProductList',
   components: {
     Product
   }
