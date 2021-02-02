@@ -1,0 +1,17 @@
+$theme-colors: (
+  primary: #000000,
+  cart: #A8EFB4,
+);
+
+$card-bg: #f9f9f9;
+
+.btn.btn-primary:hover {
+  color: #fff;
+  background-color: #4CD964;
+  border-color: #4CD964;
+}
+
+// #f9f9f9
+
+@import 'node_modules/bootstrap/scss/bootstrap.scss';
+@import 'node_modules/bootstrap-vue/src/index.scss';

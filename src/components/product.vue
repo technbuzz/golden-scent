@@ -9,7 +9,7 @@
       no-body
       style="max-width: 20rem;"
     >
-      <b-card-body class="p-2">
+      <b-card-body class="px-3 py-1">
         <b-card-title>{{ product.name }}</b-card-title>
         <b-card-text class="text-black-50">
           Some quick example text to build on the card title and make up the bulk of the card's
@@ -18,7 +18,7 @@
         <b-container class="bv-example-row">
           <b-row class="justify-content-between">
             <h6 class="price font-weight-bold">{{ product.special_price }} SAR</h6>
-            <h6><b-badge>-{{ product.special_price }} %</b-badge></h6>
+            <h6><b-badge class="badge-cart">-{{ product.special_price }} %</b-badge></h6>
           </b-row>
 
           <b-row class="justify-content-between">
@@ -47,4 +47,12 @@ export default {
   .price {
     color: red
   }
+
+  .card {
+    border: none;
+    img {
+      mix-blend-mode: darken;
+    }
+  }
+
 </style>
