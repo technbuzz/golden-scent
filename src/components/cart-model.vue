@@ -12,7 +12,7 @@
     </b-media>
     <hr>
     <h4>Size</h4>
-    <b-button href="#" block variant="primary btn-lg" @click="showModal">Add To Cart</b-button>
+    <b-button href="#" block variant="primary btn-lg" @click="addToCart">Add To Cart</b-button>
 
   </div>
 </template>
@@ -22,6 +22,12 @@ export default {
   name: 'CartModal',
   props: {
     product: Object
+  },
+  methods: {
+    addToCart () {
+      debugger
+      this.$emit('close')
+    }
   }
 }
 </script>

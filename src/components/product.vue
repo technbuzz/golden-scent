@@ -14,24 +14,26 @@
         <b-card-text class="text-black-50 font-weight-light">
           {{ product.name }}
         </b-card-text>
-        <b-container class="bv-example-row">
+        <b-container class="price-wrapper">
           <b-row class="justify-content-between">
-            <h6 class="price font-weight-bold">{{ product.special_price }} SAR</h6>
-            <h6><b-badge class="badge-cart">-{{ product.special_price }} %</b-badge></h6>
+            <h6 class="price font-weight-bold">{{ product.special_price }} {{ product.currency }}</h6>
+            <h6><b-badge class="badge-cart" v-if="showDiscount">-{{ savedPercent }} %</b-badge></h6>
           </b-row>
 
-          <b-row class="justify-content-between">
-            <p class="small"><s>444 SAR</s></p>
-            <h6>Save 285.0 SAR</h6>
+          <b-row class="justify-content-between" v-if="showDiscount">
+            <p class="small"><s>{{ originalPrice }} {{ product.currency }}</s></p>
+            <h6>Save {{ saved }} {{ product.currency }}</h6>
           </b-row>
         </b-container>
       </b-card-body>
 
-      <div class="px-3 pb-2"><b-button href="#" block variant="primary" @click="showModal">Add</b-button></div>
+      <div class="px-3 pb-2">
+        <b-button href="#" block variant="primary" @click="showModal">{{ this.avilable }}</b-button>
+      </div>
     </b-card>
 
     <b-modal v-model="cartModel" title="Add item to cart" hide-footer>
-      <cart-model :product="product" />
+      <cart-model :product="product" @close="hideModal" />
     </b-modal>
   </div>
 </template>
@@ -44,15 +46,37 @@ export default {
   props: {
     product: Object
   },
+  created () {
+    console.log('product: ', this.product);
+    this.calculateDiscount()
+  },
+  computed: {
+    avilable () {
+      return this.product.in_stock ? 'Add' : 'Notify Me'
+    }
+  },
   data () {
     return {
-      cartModel: false
+      cartModel: false,
+      showDiscount: false,
+      originalPrice: 0,
+      saved: 0,
+      savedPercent: 0
     }
   },
   components: {
     CartModel
   },
   methods: {
+    calculateDiscount () {
+      const { default: currPrice, default_original: originalPrice } = this.product.price[this.product.currency]
+      if (originalPrice > currPrice) {
+        this.showDiscount = true
+        this.originalPrice = originalPrice
+        this.saved = originalPrice - currPrice
+        this.savedPercent = parseInt(this.saved / originalPrice * 100)
+      }
+    },
     showModal () {
       this.cartModel = true
     },
@@ -67,6 +91,9 @@ export default {
   .price {
     color: red
   }
+  .price-wrapper {
+    min-height: 63px;
+  }
 
   .card {
     img {
@@ -80,6 +107,10 @@ export default {
 
     .card-text {
       min-height: 48px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
     }
 
     h4.card-title {
