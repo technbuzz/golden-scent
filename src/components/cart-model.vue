@@ -7,7 +7,14 @@
 
       <h6 class="m-0">{{ product.brand_value }}</h6>
       <p class="m-0 font-weight-light">{{ product.name }}</p>
-      <h5>{{ selectedSize.special_price }}</h5>
+      <div v-if="selectedSize.showDiscount" class="d-flex">
+        <h6 class="text-danger">{{ selectedSize.special_price }} {{ product.currency }}</h6>
+        <small class="px-2"><s>{{ selectedSize.saved}} {{ product.currency}}</s></small>
+        <h6>
+          <b-badge class="badge-cart" >{{ selectedSize.savedPercent }} %</b-badge>
+        </h6>
+      </div>
+      <h6 v-else>{{ selectedSize.special_price }}</h6>
       <a href="#" class="text-info">View Porduct Details</a>
     </b-media>
     <hr>
@@ -43,8 +50,8 @@ export default {
         pressedState
       }
     })
-    console.log('this.sizes: ', this.sizes);
     this.selectedSize = this.product.associated_products[0]
+    this.calculateDiscount()
   },
   data () {
     return {
@@ -54,13 +61,28 @@ export default {
   },
   methods: {
     addToCart () {
-      debugger
       this.$emit('close')
     },
     changeSize (size) {
       this.sizes.forEach(size => { size.pressedState = false })
       size.pressedState = true
       this.selectedSize = size
+    },
+    calculateDiscount () {
+      this.sizes = this.sizes.map(size => {
+        if (size.regular_price > size.special_price) {
+          const showDiscount = true
+          const saved = size.regular_price - size.special_price
+          const savedPercent = parseInt(saved / size.regular_price * 100)
+          return {
+            ...size,
+            showDiscount,
+            saved,
+            savedPercent
+          }
+        }
+        return size
+      })
     }
   }
 }
