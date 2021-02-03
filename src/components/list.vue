@@ -1,7 +1,13 @@
 <template>
   <div>
-    <h1>Product List</h1>
-    <product :product="product" v-for="(product, index) in products" v-bind:key="index"/>
+    <b-container class="bv-example-row">
+      <h1>Product List</h1>
+      <b-row>
+        <b-col cols="12" sm="6" md="4" class="m-auto" v-for="(product, index) in products" v-bind:key="index">
+          <product :product="product" />
+        </b-col>
+      </b-row>
+    </b-container>
   </div>
 </template>
 

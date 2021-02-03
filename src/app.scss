@@ -5,6 +5,11 @@ $theme-colors: (
 
 $card-bg: #f9f9f9;
 
+article.card {
+  border: none;
+  margin: 0 auto 1rem auto;
+}
+
 .btn.btn-primary:hover {
   color: #fff;
   background-color: #4CD964;
