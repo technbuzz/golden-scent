@@ -48,7 +48,6 @@ export default {
     product: Object
   },
   created () {
-    console.log('product: ', this.product)
     this.calculateDiscount()
   },
   computed: {
