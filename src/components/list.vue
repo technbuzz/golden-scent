@@ -45,7 +45,6 @@ export default {
         const { data } = await axios.get('https://gs-euw1-public-data-prod.s3-eu-west-1.amazonaws.com/new-web/test/test.json')
         this.products = data.hits
       } catch (error) {
-        console.log('error: ', error)
         this.error = true
       } finally {
         this.loading = false
