@@ -7,18 +7,23 @@
 
       <h6 class="m-0">{{ product.brand_value }}</h6>
       <p class="m-0 font-weight-light">{{ product.name }}</p>
-      <div v-if="selectedSize.showDiscount" class="d-flex">
-        <h6 class="text-danger">{{ selectedSize.special_price }} {{ product.currency }}</h6>
-        <small class="px-2"><s>{{ selectedSize.saved}} {{ product.currency}}</s></small>
-        <h6>
-          <b-badge class="badge-cart" >{{ selectedSize.savedPercent }} %</b-badge>
-        </h6>
-      </div>
-      <h6 v-else>{{ selectedSize.special_price }}</h6>
+
+      <template v-if="product.associated_products">
+        <div v-if="selectedSize.showDiscount" class="d-flex">
+          <h6 class="text-danger">{{ selectedSize.special_price }} {{ product.currency }}</h6>
+          <small class="px-2"><s>{{ selectedSize.saved}} {{ product.currency}}</s></small>
+          <h6>
+            <b-badge class="badge-cart" >{{ selectedSize.savedPercent }} %</b-badge>
+          </h6>
+        </div>
+        <h6 v-else>{{ selectedSize.special_price }}</h6>
+      </template>
+      <h6 v-else>{{ product.special_price }} {{ product.currency}}</h6>
+
       <a href="#" class="text-info">View Porduct Details</a>
     </b-media>
-    <hr>
-    <div class="my-3">
+    <div class="my-3" v-if="product.associated_products">
+      <hr>
       <h4>Size</h4>
       <b-button
         v-for="(btn, idx) in sizes"
@@ -37,21 +42,18 @@
 </template>
 
 <script>
+import { findDiscount } from './helpers.js'
+
 export default {
   name: 'CartModal',
   props: {
     product: Object
   },
   created () {
-    this.sizes = this.product.associated_products.map((item, index) => {
-      const pressedState = index === 0 ? true : false
-      return {
-        ...item,
-        pressedState
-      }
-    })
-    this.selectedSize = this.product.associated_products[0]
-    this.calculateDiscount()
+    if (this.product.associated_products) {
+      this.setSizes()
+      this.calculateDiscount()
+    }
   },
   data () {
     return {
@@ -63,6 +65,16 @@ export default {
     addToCart () {
       this.$emit('close')
     },
+    setSizes () {
+      this.sizes = this.product.associated_products.map((item, index) => {
+        const pressedState = index === 0
+        return {
+          ...item,
+          pressedState
+        }
+      })
+      this.selectedSize = this.product.associated_products[0]
+    },
     changeSize (size) {
       this.sizes.forEach(size => { size.pressedState = false })
       size.pressedState = true
@@ -72,8 +84,7 @@ export default {
       this.sizes = this.sizes.map(size => {
         if (size.regular_price > size.special_price) {
           const showDiscount = true
-          const saved = size.regular_price - size.special_price
-          const savedPercent = parseInt(saved / size.regular_price * 100)
+          const { saved, savedPercent } = findDiscount(size.regular_price, size.special_price)
           return {
             ...size,
             showDiscount,

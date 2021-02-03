@@ -40,6 +40,7 @@
 
 <script>
 import CartModel from './cart-model.vue'
+import { findDiscount } from './helpers.js'
 
 export default {
   name: 'Product',
@@ -47,7 +48,7 @@ export default {
     product: Object
   },
   created () {
-    console.log('product: ', this.product);
+    console.log('product: ', this.product)
     this.calculateDiscount()
   },
   computed: {
@@ -73,8 +74,9 @@ export default {
       if (originalPrice > currPrice) {
         this.showDiscount = true
         this.originalPrice = originalPrice
-        this.saved = originalPrice - currPrice
-        this.savedPercent = parseInt(this.saved / originalPrice * 100)
+        const { saved, savedPercent } = findDiscount(originalPrice, currPrice)
+        this.saved = saved
+        this.savedPercent = savedPercent
       }
     },
     showModal () {
